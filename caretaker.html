@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Caretaker Page</title>
+    </head>
+    <body>
+        <form action="index.html"><button>< Home</button></form><br>
+        <button id="btnStart">START RECORDING</button><br>
+        <button id="btnStop">STOP RECORDING</button> 
+        
+        <video controls></video>
+        <video id="vid2" controls></video>
+        
+        <script>
+            let constraintObj = {
+                audio: false,
+                video: {
+                    facingMode: "user",
+                    width: { min: 640, ideal: 12800, max:1920 },
+                }
+            }
+            if (navigator.mediaDevice === undefined) {} else{
+                navigator.mediaDevices.enumerateDevices().then(devices => {
+                    devices.forEach(device=>{
+                        console.log(device.kind.toUpperCase(), device.label);
+                    })
+                })
+                .catch(err=>{
+                    console.log(err.name, err.message);
+                })
+            }
+            navigator.mediaDevices.getUserMedia(constraintObj).then(function(mediaStreamObj) {
+                let video = document.querySelector('video');
+                if ("srcObject" in video) {
+                    video.srcObject = mediaStreamObj;
+                } else {
+                    video.src = window.URL.createObjectURL(mediaStreamObj);
+                }
+                video.onloadedmetadata = function(ev) {
+                    video.play()
+                };
+        
+                let start = document.getElementById('btnStart');
+                let stop = document.getElementById('btnStop');
+                let vidSave = document.getElementById('vid2');
+                let mediaRecorder = new MediaRecorder(mediaStreamObj);
+                let chunks = [];
+        
+                start.addEventListener('click', (ev)=>{
+                    mediaRecorder.start();
+                    console.log("Media recorder is: ", mediaRecorder.state);
+                })
+                stop.addEventListener('click', (ev)=>{
+                    mediaRecorder.stop();
+                    console.log("Media recorder is: ", mediaRecorder.state);
+                })
+                mediaRecorder.ondataavailable = function(ev) {
+                    console.log("DATA IS AVAILABLE")
+                    chunks.push(ev.data);
+                    console.log("chunk data: ", ev.data)
+                }
+                mediaRecorder.onstop = (ev)=>{
+                    localStorage.setItem("chunks", JSON.stringify(chunks))
+                    console.log("set item into store,", chunks)
+                    let blob = new Blob(chunks, { 'type' : 'video/mp4;' });
+                    console.log(blob)
+                    chunks = []
+                    let videoURL = window.URL.createObjectURL(blob);
+                    vidSave.src = videoURL;
+                }
+            })
+            // .catch(function(err)) {
+            //     console.log(err.name, err.message);
+            // }
+        </script>
+    </body>
+    
+</html>

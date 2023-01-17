@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" , initial-scale="1.0">
+    <title>Document</title>
+    <script src="addMedication.js"></script>
+</head>
+<!-- <script src="script.js"></script> -->
+<!-- <body onload="javascript:changeLab()"> -->
+
+<body>
+    <form action="index.html">
+    <button>< Home</button></form>
+    <br>
+    <br>
+    <!-- <button id="arduinoTrig">Click to trigger Arduino</button><br> -->
+
+    <button onclick="notifyme()">Click here to allow notifications</button>
+    <button onclick="triggerNotification()">Notify me!</button><br>
+    <label id="medlab">No medications added yet, click "Add a medication"</label><br><br>
+    <a href="addmed.html">Add a medication</a><br>
+
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<h1>Your Medications:</h1>
+<style>
+    th {
+        color: #fff;
+    }
+</style>
+
+
+<table class="table table-striped">
+    <tr class="bg-info">
+        <th>Medication Name</th>
+        <th>Dosage</th>
+        <th>Unit</th>
+        <th>Date/Time</th>
+
+    </tr>
+
+    <tbody id="myTable">
+
+    </tbody>
+</table>
+
+<!-- <video controls></video> -->
+<video id="vid2" controls></video>
+<script>
+
+    var medications = localStorage.getItem("medications")
+    medications = JSON.parse(medications)
+    buildTable(medications)
+
+    function buildTable(dataArr) {
+        console.log("initiated buildtable func")
+        console.log("dataArr is: ", dataArr)
+        console.log("dataArr.length is: ", dataArr.length)
+        var table = document.getElementById('myTable')
+
+        for (var i = 0; i < dataArr.length; i++) {
+            var row = `<tr>
+							<td>${dataArr[i].medname}</td>
+							<td>${dataArr[i].dosage}</td>
+							<td>${dataArr[i].unit}</td>
+                            <td>${dataArr[i].datetime}</td>
+					  </tr>`
+            console.log("when i is: ", i, "then medname is: ", dataArr[i].medname)
+            console.log(dataArr[i].medname)
+            table.innerHTML += row
+        }
+    }
+    var medications = JSON.parse(localStorage.getItem("medications"))
+    var datetime = JSON.stringify(medications[0].datetime)
+    var sliceIndex = datetime.indexOf("T") + 1
+    var time = datetime.slice(sliceIndex, datetime.length - 1)
+    var hour = parseInt(time.slice(0, 2))
+    var minute = (3, datetime.length - 1)
+
+    if (hour > 12) {
+        hour = hour - 12
+        console.log(hour)
+        var newtime = ""
+        newtime = newtime.concat(0, hour, ":", minute)
+        // time.concat(0, hour, ":", minute)
+
+        console.log("time: ", newtime)
+    }
+    console.log("under medications, data is: ", datetime)
+    setInterval(() => {
+        let date = new Date(),
+            h = date.getHours(),
+            m = date.getMinutes(),
+            ampm = "AM";
+        var setTime = ""
+        if (h > 12) {
+            h = h - 12;
+            ampm = "PM";
+            setTime.concat(0, h, ":", m)
+        } else {
+            setTime.concat(h, ":", m)
+        }
+        if (newtime === setTime) {
+            console.log("THE TIME IS NOW")
+        }
+        console.log(newtime)
+        console.log(setTime)
+        console.log(h, ":", m,)
+    }, 60000)
+
+
+
+
+
+
+
+
+    let constraintObj = {
+        audio: false,
+        video: {
+            facingMode: "user",
+            width: { min: 640, ideal: 12800, max: 1920 },
+        }
+    }
+        if (navigator.mediaDevice === undefined) { } else {
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+            devices.forEach(device => {
+                console.log(device.kind.toUpperCase(), device.label);
+            })
+        })
+            .catch(err => {
+                console.log(err.name, err.message);
+            })
+    }
+    navigator.mediaDevices.getUserMedia(constraintObj).then(function (mediaStreamObj) {
+        // let video = document.querySelector('video');
+        // if ("srcObject" in video) {
+        //     video.srcObject = mediaStreamObj;
+        // } else {
+        //     video.src = window.URL.createObjectURL(mediaStreamObj);
+        // }
+        // video.onloadedmetadata = function(ev) {
+        //     video.play()
+        // };
+
+        let vidSave = document.getElementById('vid2');
+        let mediaRecorder = new MediaRecorder(mediaStreamObj);
+        let chunks = [];
+            console.log(vidSave.id)
+        chunks = JSON.parse(localStorage.getItem("chunks"))
+        console.log(chunks)
+        let blob = new Blob(chunks, { 'type': 'video/mp4;' });
+        chunks = []
+        let videoURL = window.URL.createObjectURL(blob);
+        console.log(videoURL)
+        vidSave.src = videoURL;
+
+
+    })
+            // .catch(function(err)) {
+            //     console.log(err.name, err.message);
+            // }
+</script>
+
+</html>

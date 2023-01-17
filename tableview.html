@@ -1,0 +1,61 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style>
+    th{ 
+        color:#fff;
+            }
+</style>
+
+
+<table class="table table-striped">
+    <tr  class="bg-info">
+        <th>Medication Name</th>
+        <th>Dosage</th>
+        <th>Unit</th>
+        <th>Date</th>
+        <th>time</th>
+
+    </tr>
+
+    <tbody id="myTable">
+        
+    </tbody>
+</table>
+
+<script>
+	var myArray = [
+        {'medname':'Claritin', 'dosage':'1', 'unit':'pill', 'date':'11/10/1989', 'time':'1:33PM'},
+        {'medname':'Advil', 'dosage':'30', 'unit':'tablet', 'date':'11/10/1989', 'time':'1:33PM'},
+        {'medname':'Ibuprofen', 'dosage':'30', 'unit':'pill', 'date':'11/10/1989', 'time':'1:33PM'},
+        {'medname':'Syndopa', 'dosage':'30', 'unit':'tablet', 'date':'11/10/1989', 'time':'1:33PM'},
+        {'medname':'Antibiotics', 'dosage':'30', 'unit':'capsule', 'date':'11/10/1989', 'time':'1:33PM'},
+        {'medname':'Farxiga', 'dosage':'30', 'unit':'mg', 'tablet':'11/10/1989', 'time':'1:33PM'}
+    ]
+	
+
+			buildTable(myArray)
+			console.log(myArray)
+
+
+
+	function buildTable(myArray){
+		var table = document.getElementById('myTable')
+
+		for (var i = 0; i < myArray.length; i++){
+			var row = `<tr>
+							<td>${myArray[i].medname}</td>
+							<td>${myArray[i].dosage}</td>
+							<td>${myArray[i].unit}</td>
+                            <td>${myArray[i].date}</td>
+                            <td>${myArray[i].time}</td>
+
+
+					  </tr>`
+			table.innerHTML += row
+
+
+		}
+	}
+
+</script>
